@@ -38,7 +38,7 @@ jobs:
       - name: Build
         working-directory: ${{ matrix.image_name }}
         run: |
-        go build -o app .
+          go build -o app .
 
       - name: Log in to Github Container Registry
         uses: docker/login-action@v2
