@@ -11,7 +11,7 @@ COPY . .
 RUN go mod tidy
 
 # Uygulamayı derle ve main adında bir dosya oluştur
-RUN CGO_ENABLED=0 GOOS=Linux go build -a -installsuffix cgo -o demory .
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o demory main.go
 RUN chmod +x demory
 
 FROM scratch
