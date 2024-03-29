@@ -25,7 +25,7 @@ jobs:
 
     strategy:
       matrix:
-        image_name: ["tugberk07"]
+        image_name: ["concurrent-task"]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
