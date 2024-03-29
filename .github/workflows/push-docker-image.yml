@@ -36,7 +36,7 @@ jobs:
           go-version: 1.17
 
       - name: Build
-        working-directory: ${{ matrix.image_name }}
+        working-directory: /app
         run: |
           go build -o app .
 
