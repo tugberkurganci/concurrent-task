@@ -25,7 +25,7 @@ jobs:
 
     strategy:
       matrix:
-        image_name: ["konzek"]
+        image_name: ["tugberk07"]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
