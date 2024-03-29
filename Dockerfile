@@ -1,0 +1,21 @@
+# Alpine Linux tabanlı Docker imajını temel al
+FROM golang:alpine as builder
+
+# Çalışma dizinini /app olarak belirle
+WORKDIR /go/src/app
+
+# Docker ana dizinindeki tüm dosyaları /app dizinine kopyala
+COPY . .
+
+# Modüllerin tutarlılığını sağlamak için go mod tidy komutunu çalıştır
+RUN go mod tidy
+
+# Uygulamayı derle ve main adında bir dosya oluştur
+RUN CGO_ENABLED=0 GOOS=Linux go build -a -installsuffix cgo -o demory .
+RUN chmod +x demory
+
+FROM scratch
+COPY --from=builder /go/src/app/demory /demory
+ENTRYPOINT ["/demory"]
+
+
