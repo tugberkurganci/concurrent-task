@@ -2,7 +2,7 @@
 FROM golang:alpine as builder
 
 # Çalışma dizinini /app olarak belirle
-WORKDIR /go/src/app
+WORKDIR /app
 
 # Docker ana dizinindeki tüm dosyaları /app dizinine kopyala
 COPY . .
@@ -15,7 +15,7 @@ RUN CGO_ENABLED=0 GOOS=Linux go build -a -installsuffix cgo -o demory .
 RUN chmod +x demory
 
 FROM scratch
-COPY --from=builder /go/src/app/demory /demory
+COPY --from=builder /app/demory /demory
 ENTRYPOINT ["/demory"]
 
 
