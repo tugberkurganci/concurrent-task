@@ -35,6 +35,14 @@ func (h *TaskHandler) releaseWorker() {
 	<-h.WorkerPool
 }
 
+// @Summary Retrieves all tasks
+// @Description Retrieves all tasks
+// @Tags Tasks
+// @Accept json
+// @Produce json
+// @Success 200 {object} []models.Task "List of tasks"
+// @Failure 500 {object} globalerror.ErrorResponse "Internal server error"
+// @Router /tasks [get]
 func (h *TaskHandler) GetAllTask(c *fiber.Ctx) error {
 	loggerx.Info("GetAllTask function called")
 
@@ -79,6 +87,17 @@ func (h *TaskHandler) GetAllTask(c *fiber.Ctx) error {
 	return c.Status(http.StatusOK).JSON(result)
 
 }
+
+// @Summary Creates a new task
+// @Description Creates a new task
+// @Tags Tasks
+// @Accept json
+// @Produce json
+// @Param task body models.Task true "Task object to create"
+// @Success 201 {object} EmptyResponse "Empty response"
+// @Failure 400 {object} globalerror.ErrorResponse "Bad request"
+// @Failure 500 {object} globalerror.ErrorResponse "Internal server error"
+// @Router /tasks [post]
 func (h *TaskHandler) CreateTask(c *fiber.Ctx) error {
 	loggerx.Info("CreateTask function called")
 	var task models.Task
@@ -123,6 +142,16 @@ func (h *TaskHandler) CreateTask(c *fiber.Ctx) error {
 	return c.Status(http.StatusCreated).JSON(nil)
 }
 
+// @Summary Deletes a task by its ID
+// @Description Deletes a task by its ID
+// @Tags Tasks
+// @Accept json
+// @Produce json
+// @Param id path integer true "Task ID to delete"
+// @Success 200 {object} EmptyResponse "Empty response"
+// @Failure 400 {object} globalerror.ErrorResponse "Bad request"
+// @Failure 500 {object} globalerror.ErrorResponse "Internal server error"
+// @Router /tasks/{id} [delete]
 func (h *TaskHandler) DeleteTask(c *fiber.Ctx) error {
 	loggerx.Info("DeleteTask function called")
 	resultChan := make(chan *[]models.Task)
@@ -165,6 +194,16 @@ func (h *TaskHandler) DeleteTask(c *fiber.Ctx) error {
 	return c.Status(http.StatusOK).JSON(fiber.Map{"success": true})
 }
 
+// @Summary Updates an existing task
+// @Description Updates an existing task
+// @Tags Tasks
+// @Accept json
+// @Produce json
+// @Param task body models.Task true "Updated task object"
+// @Success 201 {object} EmptyResponse "Empty response"
+// @Failure 400 {object} globalerror.ErrorResponse "Bad request"
+// @Failure 500 {object} globalerror.ErrorResponse "Internal server error"
+// @Router /tasks [put]
 func (h *TaskHandler) UpdateTask(c *fiber.Ctx) error {
 	loggerx.Info("UpdateTask function called")
 	var updatedTask models.Task
@@ -205,6 +244,17 @@ func (h *TaskHandler) UpdateTask(c *fiber.Ctx) error {
 	loggerx.Info("Task updated successfully")
 	return c.Status(http.StatusOK).JSON(fiber.Map{"success": true})
 }
+
+// @Summary Retrieves a task by its ID
+// @Description Retrieves a task by its ID
+// @Tags Tasks
+// @Accept json
+// @Produce json
+// @Param id path integer true "Task ID to retrieve"
+// @Success 200 {object} models.Task "Task object"
+// @Failure 404 {object} globalerror.ErrorResponse "Not found"
+// @Failure 500 {object} globalerror.ErrorResponse "Internal server error"
+// @Router /tasks/{id} [get]
 func (h *TaskHandler) GetByID(c *fiber.Ctx) error {
 	loggerx.Info("GetByID function called")
 
@@ -257,6 +307,17 @@ func (h *TaskHandler) GetByID(c *fiber.Ctx) error {
 	}
 }
 
+// @Summary Retrieves all tasks with pagination
+// @Description Retrieves all tasks with pagination
+// @Tags Tasks
+// @Accept json
+// @Produce json
+// @Param page query integer false "Page number"
+// @Param pageSize query integer false "Number of tasks per page"
+// @Success 200 {object} EmptyResponse "Empty response"
+// @Failure 400 {object} globalerror.ErrorResponse "Bad request"
+// @Failure 500 {object} globalerror.ErrorResponse "Internal server error"
+// @Router /tasks/page [get]
 func (h *TaskHandler) GetAllTaskWithPagination(c *fiber.Ctx) error {
 
 	loggerx.Info("GetAllTaskWithPagination function called")
@@ -297,4 +358,8 @@ func (h *TaskHandler) GetAllTaskWithPagination(c *fiber.Ctx) error {
 type PaginationParams struct {
 	Page     int `query:"page"`
 	PageSize int `query:"pageSize"`
+}
+
+type EmptyResponse struct {
+	Success bool `json:"success"`
 }

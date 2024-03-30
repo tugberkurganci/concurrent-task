@@ -1,0 +1,304 @@
+definitions:
+  app.EmptyResponse:
+    properties:
+      success:
+        type: boolean
+    type: object
+  dto.UserResponse:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      token:
+        type: string
+    type: object
+  globalerror.ErrorResponse:
+    properties:
+      errorDetail:
+        items:
+          $ref: '#/definitions/globalerror.ErrorResponseDetail'
+        type: array
+      status:
+        type: integer
+    type: object
+  globalerror.ErrorResponseDetail:
+    properties:
+      description:
+        type: string
+      fieldName:
+        type: string
+    type: object
+  models.Task:
+    properties:
+      content:
+        minLength: 2
+        type: string
+      id:
+        type: integer
+      status:
+        type: boolean
+      title:
+        minLength: 2
+        type: string
+    required:
+    - content
+    - status
+    - title
+    type: object
+info:
+  contact: {}
+  description: This is an Task Api just for concurent Task
+  termsOfService: http://swagger.io/terms/
+  title: Task Api
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Logs in a user with the provided email and password
+      parameters:
+      - description: User email
+        in: body
+        name: email
+        required: true
+        schema:
+          type: string
+      - description: User password
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Logged in user information
+          schema:
+            $ref: '#/definitions/dto.UserResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/globalerror.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/globalerror.ErrorResponse'
+      summary: Logs a user into the application
+      tags:
+      - Authentication
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Registers a new user with the provided email, password, and name
+      parameters:
+      - description: User email
+        in: body
+        name: email
+        required: true
+        schema:
+          type: string
+      - description: User password
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+      - description: User name
+        in: body
+        name: name
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Registered user information
+          schema:
+            $ref: '#/definitions/dto.UserResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/globalerror.ErrorResponse'
+        "422":
+          description: Unprocessable entity
+          schema:
+            $ref: '#/definitions/globalerror.ErrorResponse'
+      summary: Registers a new user in the application
+      tags:
+      - Authentication
+  /tasks:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves all tasks
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of tasks
+          schema:
+            items:
+              $ref: '#/definitions/models.Task'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/globalerror.ErrorResponse'
+      summary: Retrieves all tasks
+      tags:
+      - Tasks
+    post:
+      consumes:
+      - application/json
+      description: Creates a new task
+      parameters:
+      - description: Task object to create
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/models.Task'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Empty response
+          schema:
+            $ref: '#/definitions/app.EmptyResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/globalerror.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/globalerror.ErrorResponse'
+      summary: Creates a new task
+      tags:
+      - Tasks
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing task
+      parameters:
+      - description: Updated task object
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/models.Task'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Empty response
+          schema:
+            $ref: '#/definitions/app.EmptyResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/globalerror.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/globalerror.ErrorResponse'
+      summary: Updates an existing task
+      tags:
+      - Tasks
+  /tasks/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a task by its ID
+      parameters:
+      - description: Task ID to delete
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Empty response
+          schema:
+            $ref: '#/definitions/app.EmptyResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/globalerror.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/globalerror.ErrorResponse'
+      summary: Deletes a task by its ID
+      tags:
+      - Tasks
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a task by its ID
+      parameters:
+      - description: Task ID to retrieve
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Task object
+          schema:
+            $ref: '#/definitions/models.Task'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/globalerror.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/globalerror.ErrorResponse'
+      summary: Retrieves a task by its ID
+      tags:
+      - Tasks
+  /tasks/page:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves all tasks with pagination
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Number of tasks per page
+        in: query
+        name: pageSize
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Empty response
+          schema:
+            $ref: '#/definitions/app.EmptyResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/globalerror.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/globalerror.ErrorResponse'
+      summary: Retrieves all tasks with pagination
+      tags:
+      - Tasks
+swagger: "2.0"

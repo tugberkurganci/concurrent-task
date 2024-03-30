@@ -33,6 +33,17 @@ func NewAuthHandler(authService services.AuthService, jwtService services.JWTSer
 	}
 }
 
+// @Summary Logs a user into the application
+// @Description Logs in a user with the provided email and password
+// @Tags Authentication
+// @Accept json
+// @Produce json
+// @Param email body string true "User email"
+// @Param password body string true "User password"
+// @Success 200 {object} dto.UserResponse "Logged in user information"
+// @Failure 400 {object} globalerror.ErrorResponse "Bad request"
+// @Failure 401 {object} globalerror.ErrorResponse "Unauthorized"
+// @Router /auth/login [post]
 func (c *authHandler) Login(ctx *fiber.Ctx) error {
 	loggerx.Info("Login function called")
 
@@ -79,6 +90,18 @@ func (c *authHandler) Login(ctx *fiber.Ctx) error {
 	return ctx.Status(http.StatusOK).JSON(user)
 }
 
+// @Summary Registers a new user in the application
+// @Description Registers a new user with the provided email, password, and name
+// @Tags Authentication
+// @Accept json
+// @Produce json
+// @Param email body string true "User email"
+// @Param password body string true "User password"
+// @Param name body string true "User name"
+// @Success 201 {object} dto.UserResponse "Registered user information"
+// @Failure 400 {object} globalerror.ErrorResponse "Bad request"
+// @Failure 422 {object} globalerror.ErrorResponse "Unprocessable entity"
+// @Router /auth/register [post]
 func (c *authHandler) Register(ctx *fiber.Ctx) error {
 	loggerx.Info("Register function called")
 

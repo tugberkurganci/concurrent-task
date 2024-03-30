@@ -11,16 +11,14 @@ import (
 var db *sql.DB
 
 func ConnectDB() *sql.DB {
-	// PostgreSQL bağlantı dizesini al
+
 	dbURI := EnvPostgresURI()
 
-	// PostgreSQL veritabanına bağlan
 	conn, err := sql.Open("postgres", dbURI)
 	if err != nil {
 		log.Fatalf("Veritabanına bağlanırken hata oluştu: %v\n", err)
 	}
 
-	// Bağlantıyı test et
 	err = conn.Ping()
 	if err != nil {
 		log.Fatalf("Veritabanına ping atılırken hata oluştu: %v\n", err)
@@ -35,7 +33,6 @@ func ConnectDB() *sql.DB {
 	)
 `
 
-	// Tabloyu oluştur
 	_, err = conn.Exec(createTableSQL)
 	if err != nil {
 		log.Fatalf("Tablo oluşturulurken hata oluştu: %v\n", err)
@@ -53,13 +50,12 @@ func ConnectDB() *sql.DB {
 	if err != nil {
 		log.Fatalf("users tablosu oluşturulurken hata oluştu: %v\n", err)
 	}
-	// Bağlantı başarıyla oluşturuldu, geri döndür
+
 	return conn
 }
 
-// EnvPostgresURI, PostgreSQL bağlantı dizesini döndürür
 func EnvPostgresURI() string {
-	// PostgreSQL bağlantı dizesini oluştur
+
 	host := "postgres"
 	port := "5432"
 	user := "postgres"

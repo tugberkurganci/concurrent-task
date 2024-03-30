@@ -46,6 +46,16 @@ func TestTaskHandler_GetAllTask(t *testing.T) {
 	assert.Equal(t, 200, resp.StatusCode)
 }
 
+// @Summary Create a new task
+// @Description Creates a new task
+// @Tags Tasks
+// @Accept json
+// @Produce json
+// @Param task body models.Task true "Task object to create"
+// @Success 201 {object} map[string]interface{} "Empty response"
+// @Failure 400 {object} globalerror.ErrorResponse "Bad request"
+// @Failure 500 {object} globalerror.ErrorResponse "Internal server error"
+// @Router /tasks [post]
 func TestTaskHandler_CreateTask(t *testing.T) {
 	trd := setup(t)
 	defer trd()

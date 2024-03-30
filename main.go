@@ -14,13 +14,19 @@ import (
 	"konzek-jun/repository"
 	"konzek-jun/services"
 
+	_ "konzek-jun/docs"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/recover"
-
+	"github.com/gofiber/swagger"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
+// @title			Task Api
+// @version		1.0
+// @description	This is an Task Api just for concurent Task
+// @termsOfService	http://swagger.io/terms/
 func main() {
 	prometheus.InitPrometheus()
 	loggerx.Init()
@@ -38,6 +44,7 @@ func main() {
 		}
 	}()
 	appRoute := fiber.New()
+	appRoute.Get("/swagger/*", swagger.HandlerDefault)
 	db := configs.ConnectDB()
 
 	defer db.Close()
@@ -73,10 +80,11 @@ func main() {
 
 	appRoute.Use(func(ctx *fiber.Ctx) error {
 		// Middleware'i atlamak istediğimiz endpointlerin adları
-		skipEndpoints := []string{"/api/register", "/api/login", "/metrics"}
+		skipEndpoints := []string{"/api/register", "/api/login", "/metrics", "/swagger-ui/index.html"}
 
 		// Endpoint adını kontrol et
 		for _, skipEndpoint := range skipEndpoints {
+			fmt.Println(ctx.Path())
 			if ctx.Path() == skipEndpoint {
 				// Middleware'i atla
 				fmt.Println("Atladı:", skipEndpoint)
