@@ -3,53 +3,26 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"runtime"
+
 	"time"
 
 	"konzek-jun/app"
 	"konzek-jun/configs"
 	"konzek-jun/loggerx"
 	"konzek-jun/middleware"
+	"konzek-jun/prometheus"
 	"konzek-jun/repository"
 	"konzek-jun/services"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/recover"
-	"github.com/prometheus/client_golang/prometheus"
+
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-var (
-	httpRequestsTotal = prometheus.NewCounter(
-		prometheus.CounterOpts{
-			Name: "http_requests_total",
-			Help: "Total number of HTTP requests.",
-		},
-	)
-	memoryUsageGauge = prometheus.NewGauge(
-		prometheus.GaugeOpts{
-			Name: "memory_usage_bytes",
-			Help: "Current memory usage in bytes.",
-		},
-	)
-	processingTimeHistogram = prometheus.NewHistogram(
-		prometheus.HistogramOpts{
-			Name:    "http_processing_time_seconds",
-			Help:    "Histogram of processing time for HTTP requests.",
-			Buckets: prometheus.DefBuckets,
-		},
-	)
-)
-
-func initPrometheus() {
-	prometheus.MustRegister(httpRequestsTotal)
-	prometheus.MustRegister(memoryUsageGauge)
-	prometheus.MustRegister(processingTimeHistogram)
-}
-
 func main() {
-	initPrometheus()
+	prometheus.InitPrometheus()
 	loggerx.Init()
 
 	go func() {
@@ -60,8 +33,8 @@ func main() {
 
 	go func() {
 		for {
-			handleHTTPRequest()
-			time.Sleep(10 * time.Second) // 10 saniye bekleyin
+			prometheus.HandleHTTPRequest()
+			time.Sleep(30 * time.Second) // 10 saniye bekleyin
 		}
 	}()
 	appRoute := fiber.New()
@@ -114,7 +87,7 @@ func main() {
 		// Diğer durumlarda, JWT doğrulamasını yap
 		return jwtMiddleware.AuthorizeJWT(ctx)
 	})
-	appRoute.Use(measureRequestDuration)
+	appRoute.Use(prometheus.MeasureRequestDuration)
 
 	appRoute.Post("/api/tasks", td.CreateTask)
 	appRoute.Get("/api/tasks", td.GetAllTask)
@@ -125,27 +98,4 @@ func main() {
 	appRoute.Post("/api/register", authHandler.Register)
 	appRoute.Post("/api/login", authHandler.Login)
 	appRoute.Listen(":8080")
-}
-
-func handleHTTPRequest() {
-
-	httpRequestsTotal.Inc()
-
-	var memStats runtime.MemStats
-	runtime.ReadMemStats(&memStats)
-	memoryUsageGauge.Set(float64(memStats.Alloc))
-}
-func measureRequestDuration(next fiber.Handler) fiber.Handler {
-	return func(c *fiber.Ctx) error {
-		start := time.Now()
-
-		// Pass the request to the next handler
-		err := next(c)
-
-		// Measure processing time
-		duration := time.Since(start).Seconds()
-		processingTimeHistogram.Observe(duration)
-
-		return err
-	}
 }

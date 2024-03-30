@@ -1,0 +1,4 @@
+[INFO][2024-03-30 11:05:36] CreateTask function called
+[INFO][2024-03-30 11:05:37] Task inserted successfully
+[INFO][2024-03-30 11:05:37] Task inserted successfully
+[INFO][2024-03-30 11:05:37] Task created successfully
