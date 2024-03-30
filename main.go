@@ -53,7 +53,7 @@ func main() {
 	loggerx.Init()
 
 	go func() {
-		if err := http.ListenAndServe(":2222", promhttp.Handler()); err != nil {
+		if err := http.ListenAndServe(":9090", promhttp.Handler()); err != nil {
 			fmt.Println("Prometheus sunucusunu başlatırken hata oluştu:", err)
 		}
 	}()
