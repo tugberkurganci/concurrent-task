@@ -12,7 +12,9 @@ RUN go mod tidy
 
 # Uygulamayı derle ve main adında bir dosya oluştur
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o demory main.go
+
 RUN chmod +x demory
+RUN touch /app/loggerx/logfile.txt && chmod 666 /app/loggerx/logfile.txt
 
 FROM scratch
 COPY --from=builder /app/demory /demory
