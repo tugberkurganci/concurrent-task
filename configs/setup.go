@@ -60,7 +60,7 @@ func ConnectDB() *sql.DB {
 // EnvPostgresURI, PostgreSQL bağlantı dizesini döndürür
 func EnvPostgresURI() string {
 	// PostgreSQL bağlantı dizesini oluştur
-	host := "localhost"
+	host := "postgres"
 	port := "5432"
 	user := "postgres"
 	password := "test"
