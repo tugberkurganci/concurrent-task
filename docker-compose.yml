@@ -19,7 +19,7 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
 
   your_other_service:
     image: ghcr.io/tugberkurganci/app:main
