@@ -12,7 +12,7 @@ var logFile *os.File
 
 func Init() {
 
-	logFilePath := filepath.Join(".", "loggerx", "logfile.txt")
+	logFilePath := filepath.Join("/app", "loggerx", "logfile.txt")
 
 	var err error
 	logFile, err = os.OpenFile(logFilePath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
