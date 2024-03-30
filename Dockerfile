@@ -10,20 +10,28 @@ COPY . .
 # Modüllerin tutarlılığını sağlamak için go mod tidy komutunu çalıştır
 RUN go mod tidy
 
-# loggerx dizinini oluştur
+# loggerx dizinini oluştur ve dosyayı kopyala
 RUN mkdir -p /app/loggerx
-
-VOLUME /app/loggerx
+RUN touch /app/loggerx/logfile.txt && chmod 666 /app/loggerx/logfile.txt
 
 # Uygulamayı derle ve main adında bir dosya oluştur
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o konzek main.go
 
 RUN chmod +x konzek
-RUN touch /app/loggerx/logfile.txt && chmod -R a+rw /app/loggerx/logfile.txt
 
-FROM scratch
+# Yeni bir Alpine Linux tabanlı imaj başlat
+FROM alpine:latest
+
+# Uygulama dosyasını ve loggerx dizinini kopyala
 COPY --from=builder /app/konzek /konzek
+COPY --from=builder /app/loggerx /app/loggerx
+
+# Çalışma dizinini /app olarak belirle
+WORKDIR /app
+
+# Giriş noktası belirle
 ENTRYPOINT ["/konzek"]
+
 
 
 
