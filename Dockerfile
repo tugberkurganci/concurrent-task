@@ -10,17 +10,18 @@ COPY . .
 # Modüllerin tutarlılığını sağlamak için go mod tidy komutunu çalıştır
 RUN go mod tidy
 
+# loggerx dizinini oluştur
 RUN mkdir -p /app/loggerx
-
 
 # Uygulamayı derle ve main adında bir dosya oluştur
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o konzek main.go
 
 RUN chmod +x konzek
-RUN touch /app/loggerx/logfile.txt && chmod 666 /app/loggerx/logfile.txt
+RUN touch /app/loggerx/logfile.txt && chmod -R a+rw /app/loggerx/logfile.txt
 
 FROM scratch
 COPY --from=builder /app/konzek /konzek
 ENTRYPOINT ["/konzek"]
+
 
 
