@@ -23,7 +23,7 @@ services:
 
   your_other_service:
     image: ghcr.io/tugberkurganci/app:main
-    container_name: 2b409c97dda564fe415850dcfbfd702bb2b8c130de0efd55faa8871837dbc5cf
+    container_name: 187615ee6a2796cd0a3c30b2a871c00544b68cb7ade15f2377eee8277ac183ba
     restart: always
     ports:
       - "8080:8080"

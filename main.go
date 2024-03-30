@@ -114,6 +114,7 @@ func main() {
 		// Diğer durumlarda, JWT doğrulamasını yap
 		return jwtMiddleware.AuthorizeJWT(ctx)
 	})
+	appRoute.Use(measureRequestDuration)
 
 	appRoute.Post("/api/tasks", td.CreateTask)
 	appRoute.Get("/api/tasks", td.GetAllTask)
@@ -127,20 +128,24 @@ func main() {
 }
 
 func handleHTTPRequest() {
-	start := time.Now()
-	// Your HTTP request handling logic here
-
-	// Simulate processing time
-	time.Sleep(500 * time.Millisecond) // Simulate processing time
-
-	// Measure processing time
-	duration := time.Since(start).Seconds()
-	processingTimeHistogram.Observe(duration)
 
 	httpRequestsTotal.Inc()
 
-	// Get real-time memory usage
 	var memStats runtime.MemStats
 	runtime.ReadMemStats(&memStats)
-	memoryUsageGauge.Set(float64(memStats.Alloc)) // Set real-time memory usage
+	memoryUsageGauge.Set(float64(memStats.Alloc))
+}
+func measureRequestDuration(next fiber.Handler) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		start := time.Now()
+
+		// Pass the request to the next handler
+		err := next(c)
+
+		// Measure processing time
+		duration := time.Since(start).Seconds()
+		processingTimeHistogram.Observe(duration)
+
+		return err
+	}
 }
