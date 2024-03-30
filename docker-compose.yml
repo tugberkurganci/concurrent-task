@@ -11,3 +11,21 @@ services:
       POSTGRES_DB: konzek
     ports:
       - "5432:5432"
+
+  prometheus:
+    image: prom/prometheus
+    container_name: my_prometheus
+    restart: always
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+  your_other_service:
+    image: ghcr.io/tugberkurganci/app:main
+    container_name: e8dc94d2fb43
+    restart: always
+    ports:
+      - "8080:8080"
+  
+    
