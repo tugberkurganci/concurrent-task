@@ -13,6 +13,8 @@ RUN go mod tidy
 # loggerx dizinini oluştur
 RUN mkdir -p /app/loggerx
 
+VOLUME /app/loggerx
+
 # Uygulamayı derle ve main adında bir dosya oluştur
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o konzek main.go
 
