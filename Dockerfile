@@ -10,6 +10,9 @@ COPY . .
 # Modüllerin tutarlılığını sağlamak için go mod tidy komutunu çalıştır
 RUN go mod tidy
 
+RUN mkdir -p /app/loggerx
+
+
 # Uygulamayı derle ve main adında bir dosya oluştur
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o konzek main.go
 
