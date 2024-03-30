@@ -100,7 +100,7 @@ func main() {
 
 	appRoute.Use(func(ctx *fiber.Ctx) error {
 		// Middleware'i atlamak istediğimiz endpointlerin adları
-		skipEndpoints := []string{"/api/register", "/api/login"}
+		skipEndpoints := []string{"/api/register", "/api/login", "/metrics"}
 
 		// Endpoint adını kontrol et
 		for _, skipEndpoint := range skipEndpoints {
