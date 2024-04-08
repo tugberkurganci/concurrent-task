@@ -101,7 +101,7 @@ func (h *TaskHandler) GetAllTask(c *fiber.Ctx) error {
 func (h *TaskHandler) CreateTask(c *fiber.Ctx) error {
 	loggerx.Info("CreateTask function called")
 	var task models.Task
-	resultChan := make(chan *[]models.Task)
+	resultChan := make(chan bool)
 	defer close(resultChan)
 
 	if err := c.BodyParser(&task); err != nil {
@@ -117,16 +117,15 @@ func (h *TaskHandler) CreateTask(c *fiber.Ctx) error {
 
 		err := h.Service.TaskInsert(task)
 		if err != nil {
-			resultChan <- nil
+			fmt.Println("girdi")
+			resultChan <- true
 			return
-
 		}
-		resultChan <- &[]models.Task{}
-
+		resultChan <- false
 	}()
 	result := <-resultChan
 
-	if result == nil {
+	if result {
 		return c.Status(http.StatusInternalServerError).JSON(globalerror.ErrorResponse{
 			Status: http.StatusInternalServerError,
 			ErrorDetail: []globalerror.ErrorResponseDetail{
